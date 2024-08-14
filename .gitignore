@@ -128,3 +128,18 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# VS Code settings
+.vscode/
+
+# Build files
+build/
+
+# MongoDB backups
+dump/
+
+# MacOS files
+.DS_Store
+
+# JetBrains IDEs
+.idea/
