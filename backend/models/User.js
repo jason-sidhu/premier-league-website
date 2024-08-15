@@ -1,11 +1,19 @@
-const mongoose = require('mongoose'); 
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type:String, 
         required: true, 
-        trim: true
+        min: 2, 
+        max: 50
     }, 
+    lastName: {
+        type:String, 
+        required: true, 
+        min: 2, 
+        max: 50
+    }, 
+    //check this
     email: {
         type:String, 
         required: true, 
@@ -19,12 +27,17 @@ const userSchema = new mongoose.Schema({
             message: props => `${props.value} is not a valid email!`
         }
     }, 
+    favouriteTeam: {
+        type: String,
+        required: true,
+    },
+    //TODO: UPDATE REQUIREMENTS ON PASSWORD
     password: {
         type: String,
-        required: true
+        required: true,
+        min: 5 
     }
-}, {timestamps: true
-}); 
+}, {timestamps: true}); 
 
 //hash password using mongoose pre save middleware bcrypt before saving 
 userSchema.pre('save', async function(next){
@@ -48,4 +61,4 @@ userSchema.methods.comparedPassword = async function(password) {
 
 const User = mongoose.model('User', userSchema); 
 
-model.exports = User;
+export default User; 
