@@ -1,4 +1,5 @@
-import bccrypt from "bcrypt"; 
+/*CONTROLLER FOR AUTH */
+import bcrypt from "bcrypt"; 
 import jwt from "jsonwebtoken"; 
 import User from "../models/User.js"; 
 
@@ -14,8 +15,8 @@ export const register = async(req, res) => {
             password} = req.body; 
 
         //random salt to encrypty our password (bcrypt)
-        const salt = await bccrypt.genSalt();
-        const passwordHash = await bccrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
 
         //create and save new user
         const newUser = new User({
@@ -36,9 +37,7 @@ export const register = async(req, res) => {
     }
 }; 
 
-
-
-//LOGGIN IN 
+//LOGGING IN 
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -48,13 +47,15 @@ export const login = async (req, res) => {
         }
 
         const correctPassword = await bccrypt.compare(password, user.password); 
-        if(!correctPassowrd){
+        if(!correctPassword){
             return res.status(400).json({msg: "Password is incorrect"}); 
         }
 
+        //jwt 
         const token = jwt.sign( {id:user_id }, process.env.JWT_SECRET_STRING); 
-        
-        
+        delete user.password; 
+        res.status(200).json({token, user}); 
+
     } catch(err) {
         res.status(500).json({error : err.message});
     }

@@ -7,7 +7,8 @@ import path from "path";
 import helmet from "helmet"; 
 import morgan from "morgan"; 
 import { fileURLToPath } from "url"; 
-import authRoutes from "./routes/auth.js"; 
+import authRoute from "./routes/auth.js"; 
+import profileRoute from "./routes/profile.js"
 import { register } from "./controllers/auth.js";
 
 //CONFIGURATIONS and middleware 
@@ -30,15 +31,11 @@ app.use(cors());
 
 
 //ROUTES
-//basic/default route 
-app.get('/', (req, res) => {
-    res.send('API is running...');
-  });
-
-//import routes 
 // //call this api to register, auth reg is the api path, register is the controller (logic of the endpoint)
 // app.post("auth/register", register); 
-app.use("/auth", authRoutes); 
+app.use("/auth", authRoute); 
+app.use("/profile", profileRoute);
+//add more routes  
 
 //MONGODB 
 //defining the connection to mongodb
@@ -53,3 +50,8 @@ mongoose
 .catch((error) => {
   console.log(`${error} did not connect`); 
 }); 
+
+
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
