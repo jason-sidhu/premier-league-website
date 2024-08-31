@@ -12,4 +12,4 @@ router.post("/register", register);
 router.post("/login", login); 
 
 
-export default login; 
+export default router; 

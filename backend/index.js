@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 //invoke env and express application and use middleware 
 dotenv.config(); 
 const app = express(); 
-const PORT = process.env.PORT || 6001; 
+const PORT = process.env.PORT || 6001;
 
 //middleware 
 app.use(express.json()); 
@@ -32,7 +32,7 @@ app.use(cors());
 
 //ROUTES
 // //call this api to register, auth reg is the api path, register is the controller (logic of the endpoint)
-// app.post("auth/register", register); 
+// app.post("/auth/register", register); 
 app.use("/auth", authRoute); 
 app.use("/profile", profileRoute);
 //add more routes  

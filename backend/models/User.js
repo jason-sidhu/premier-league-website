@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -34,25 +35,25 @@ const userSchema = new mongoose.Schema({
     //TODO: UPDATE REQUIREMENTS ON PASSWORD
     password: {
         type: String,
-        required: true,
-        min: 5 
+        required: true
+        // min: 5 
     }
 }, {timestamps: true}); 
 
-//hash password using mongoose pre save middleware bcrypt before saving 
-userSchema.pre('save', async function(next){
-    if(this.isModified('password') || this.isNew) {
-        try { 
-            const salt = await bcrypt.genSalt(10); 
-            this.password = await bcrypt.hash(this.password, salt); 
-            next(); 
-        } catch (error) {
-            next(error); 
-        }
-    } else {
-        next(); 
-    }
-}); 
+// //hash password using mongoose pre save middleware bcrypt before saving 
+// userSchema.pre('save', async function(next){
+//     if(this.isModified('password') || this.isNew) {
+//         try { 
+//             const salt = await bcrypt.genSalt(10); 
+//             this.password = await bcrypt.hash(this.password, salt); 
+//             next(); 
+//         } catch (error) {
+//             next(error); 
+//         }
+//     } else {
+//         next(); 
+//     }
+// }); 
 
 //compare password with hashed password 
 userSchema.methods.comparedPassword = async function(password) {
