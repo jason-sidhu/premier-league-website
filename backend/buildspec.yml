@@ -21,4 +21,4 @@ artifacts:
   files:
     - '**/*'
   discard-paths: yes
-  base-directory: src
+  base-directory: backend
