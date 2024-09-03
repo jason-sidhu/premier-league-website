@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import TableControls from './TableControls'; // Custom table controls component
 import DataTable from './DataTable'; // Custom data table component
 import Navbar from "scenes/navbar";
@@ -14,9 +14,11 @@ const FantasyPage = () => {
     const [position, setPosition] = useState("All Positions");
     const [price, setPrice] = useState("Unlimited");
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true); // Loading state
 
     useEffect(() => {
         const fetchFantasyData = async () => {
+            setLoading(true); // Set loading to true when fetching starts
             try {
                 const response = await axios.get('http://localhost:3001/fantasy/general');
                 const formattedData = response.data.elements.map((player) => ({
@@ -36,9 +38,10 @@ const FantasyPage = () => {
     
                 setFantasyData(formattedData);
                 setFilteredData(data);
-                
             } catch (error) {
                 console.error('Error fetching fantasy data:', error);
+            } finally {
+                setLoading(false); // Set loading to false after fetching completes
             }
         };
 
@@ -95,8 +98,27 @@ const FantasyPage = () => {
             <Box>
                 <Navbar/>
             </Box>
-            <Box sx={{ padding: '20px' }}>
+            <Box sx={{ padding: '20px', position: 'relative' }}>
                 <Typography variant="h4" gutterBottom>Fantasy Premier League Statistics</Typography>
+                
+                {loading && (
+                    <Box 
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            zIndex: 1
+                        }}
+                    >
+                        <CircularProgress />
+                    </Box>
+                )}
+                
                 <TableControls 
                     team={team} setTeam={setTeam} 
                     position={position} setPosition={setPosition} 

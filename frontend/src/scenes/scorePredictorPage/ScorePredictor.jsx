@@ -87,32 +87,29 @@ const ScorePredictor = () => {
                 </Select>
             </FormControl>
 
-            {loading && (
+            {loading ? (
                 <Box 
                     sx={{
                         position: 'absolute',
-                        top: 0,
-                        left: 0,
                         width: '100%',
                         height: '100%',
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim background
                         zIndex: 2, // Ensure it's above everything else
                     }}
                 >
-                    <CircularProgress sx={{ color: 'white' }} />
+                    <CircularProgress/>
                 </Box>
-            )}
-
+                
+            ) : (
+            <>
             <Box 
                 sx={{
                     width: '100%',
                     textAlign: 'center',
                     padding: 1,
                     borderRadius: '8px',
-                    boxShadow: 3,
                     position: 'relative',
                     zIndex: 1 // Make sure content is behind the loading spinner if it overlaps
                 }}
@@ -141,6 +138,7 @@ const ScorePredictor = () => {
                     </Typography>
                 )}
             </Box>
+            
 
             <Grid container spacing={4} justifyContent="center" sx={{ position: 'relative', zIndex: 0 }}>
                 {matches.map((match, index) => (
@@ -150,10 +148,13 @@ const ScorePredictor = () => {
                             gameStarted={match.started} 
                             gameFinished={match.finished}
                             prediction={predictions[match.matchId]} 
+                            isLoggedIn={isLoggedIn} // Pass isLoggedIn as a prop to MatchCard
                         />
                     </Grid>
                 ))}
             </Grid>
+            </>
+            )}
         </Box>
     );
 };

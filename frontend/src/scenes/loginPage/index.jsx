@@ -27,7 +27,7 @@ const LoginPage = () => {
                     variant="h5"
                     sx={{ mb:"1.5rem"}}
                 >
-                    Welcome to Premier League Hub, Hub for Premier League fans
+                    Welcome to Premier League Game Hub!
                 </Typography>
                 <Form />
             </Box>

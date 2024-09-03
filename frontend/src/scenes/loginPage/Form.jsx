@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Box, 
     Button, 
@@ -9,46 +9,68 @@ import {
     MenuItem, 
     Select, 
     InputLabel,
-    FormControl
+    FormControl,
+    IconButton,
+    InputAdornment,
+    Alert,
 } from "@mui/material";
-import EditOutlineIcon from "@mui/icons-material/EditOutlined";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
-import FlexBetween from "components/FlexBetween";
 import { teamMapping } from "components/Mapping";
 
 const registerSchema = yup.object().shape({
-    firstName: yup.string().required("required"),
-    lastName: yup.string().required("required"),
-    email: yup.string().email("invalid email").required("required"),
-    favouriteTeam: yup.string().required("required"),
-    password:yup.string().required("required")
-})
+    firstName: yup.string()
+        .min(2, 'First Name must be at least 2 characters')
+        .required("Required"),
+    lastName: yup.string()
+        .min(2, 'Last Name must be at least 2 characters')
+        .required("Required"),
+    username: yup.string()
+        .min(2, 'Username must be at least 2 characters')
+        .required("Required"),
+    email: yup.string()
+        .email("Invalid email")
+        .required("Required"),
+    favouriteTeam: yup.string()
+        .required("Required"),
+    password: yup.string()
+        .min(5, 'Password must be at least 5 characters')
+        .required("Required"),
+    verifyPassword: yup.string()
+        .oneOf([yup.ref('password'), null], 'Passwords must match')
+        .required("Required")
+});
 
 
 const loginSchema = yup.object().shape({
     email: yup.string().email("invalid email").required("required"),
-    password:yup.string().required("required")
-})
+    password: yup.string().required("required")
+});
 
 const initialValuesRegister = {
     firstName: "",
     lastName: "",
     email: "",
     favouriteTeam: "",
-    password: ""
-}
+    password: "",
+    username:"",
+    verifyPassword: "",
+};
 
 const initialValuesLogin = {
     email: "",
     password: ""
-}
+};
 
 const Form = () => {
     const [pageType, setPageType] = useState("login");
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
     const { palette } = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
@@ -57,63 +79,75 @@ const Form = () => {
     const isRegister = pageType === "register";
 
     const register = async (values, onSubmitProps) => {
-        const savedUserResponse = await fetch(
-            "http://localhost:3001/auth/register",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
+        setError(""); // Reset error message
+        try {
+            const savedUserResponse = await fetch(
+                "http://localhost:3001/auth/register",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(values),
+                }
+            );
+
+            if (!savedUserResponse.ok) {
+                const errorData = await savedUserResponse.json();
+                setError(errorData.message || "Registration failed.");
+                return;
             }
-        );
-        if (!savedUserResponse.ok) {
-            const errorData = await savedUserResponse.json();
-            console.error("Registration failed:", errorData);
-            return;
-        }
 
-        const savedUser = await savedUserResponse.json();
-        onSubmitProps.resetForm();
+            const savedUser = await savedUserResponse.json();
+            onSubmitProps.resetForm();
 
-        if(savedUser) {
-            setPageType("login");
+            if (savedUser) {
+                setPageType("login");
+            }
+        } catch (err) {
+            setError("An unexpected error occurred. Please try again later.");
         }
     };
 
     const login = async (values, onSubmitProps) => {
-        const loggedInResponse = await fetch(
-            "http://localhost:3001/auth/login",
-            {
-                method: "POST",
-                headers:{"Content-Type": "application/json"},
-                body: JSON.stringify(values),
-            }
-        );
-
-        const loggedIn = await loggedInResponse.json();
-        onSubmitProps.resetForm();
-        if(loggedIn) {
-            dispatch(
-                setLogin({
-                    user: loggedIn.user,
-                    token:loggedIn.token
-                })
+        setError(""); // Reset error message
+        try {
+            const loggedInResponse = await fetch(
+                "http://localhost:3001/auth/login",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(values),
+                }
             );
-            navigate("/");
+
+            const loggedIn = await loggedInResponse.json();
+            if (!loggedInResponse.ok) {
+                setError(loggedIn.message || "Login failed.");
+                return;
+            }
+
+            onSubmitProps.resetForm();
+            if (loggedIn) {
+                dispatch(
+                    setLogin({
+                        user: loggedIn.user,
+                        token: loggedIn.token
+                    })
+                );
+                navigate("/");
+            }
+        } catch (err) {
+            setError("An unexpected error occurred. Please try again later.");
         }
     };
 
     const handleFormSubmit = async (values, onSubmitProps) => {
-        console.log("Current page type:", pageType);
+        setError(""); // Reset error message
         if (isLogin) {
-            console.log("Attempting to log in...");
             await login(values, onSubmitProps);
         } else if (isRegister) {
-            console.log("Attempting to register...");
             await register(values, onSubmitProps);
         }
     };
-    
-    
 
     return (
         <Formik 
@@ -128,7 +162,6 @@ const Form = () => {
                 handleBlur, 
                 handleChange,
                 handleSubmit, 
-                setFieldValue, 
                 resetForm, 
             }) => (
                 <form onSubmit={handleSubmit}>
@@ -140,6 +173,19 @@ const Form = () => {
                             "& > div": {gridColumn: isNonMobile ? undefined : "span 4"},
                         }}
                     >
+                    <TextField 
+                            label="Email"
+                            onBlur={handleBlur}
+                            onChange={(e) => {
+                                handleChange(e);
+                                setError(''); 
+                            }}
+                            value={values.email}
+                            name="email"
+                            error={Boolean(touched.email) && Boolean(errors.email)}
+                            helperText={touched.email && errors.email}
+                            sx={{ gridColumn: "span 4"}}
+                        />
                         {isRegister && (
                             <>
                                 <TextField 
@@ -162,7 +208,20 @@ const Form = () => {
                                     helperText={touched.lastName && errors.lastName}
                                     sx={{ gridColumn: "span 2"}}
                                 />
-                                 <FormControl sx={{ gridColumn: "span 4" }} error={Boolean(touched.favouriteTeam) && Boolean(errors.favouriteTeam)}>
+                                <TextField 
+                                    label="Username"
+                                    onBlur={handleBlur}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        setError(''); 
+                                    }}
+                                    value={values.username}
+                                    name="username"
+                                    error={Boolean(touched.username) && Boolean(errors.username)}
+                                    helperText={touched.username && errors.username}
+                                    sx={{ gridColumn: "span 4"}}
+                                />
+                                <FormControl sx={{ gridColumn: "span 4" }} error={Boolean(touched.favouriteTeam) && Boolean(errors.favouriteTeam)}>
                                     <InputLabel>Favourite Team</InputLabel>
                                     <Select
                                         label="Favourite Team"
@@ -181,21 +240,61 @@ const Form = () => {
                                         </Typography>
                                     )}
                                 </FormControl>
+                                <TextField 
+                                    label="Password"
+                                    type={showPassword ? "text" : "password"}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.password}
+                                    name="password"
+                                    error={Boolean(touched.password) && Boolean(errors.password)}
+                                    helperText={touched.password && errors.password}
+                                    sx={{ gridColumn: "span 4"}}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                                <TextField 
+                                    label="Verify Password"
+                                    type={showPassword ? "text" : "password"}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.verifyPassword}
+                                    name="verifyPassword"
+                                    error={Boolean(touched.verifyPassword) && Boolean(errors.verifyPassword)}
+                                    helperText={touched.verifyPassword && errors.verifyPassword}
+                                    sx={{ gridColumn: "span 4"}}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
                             </>
                         )}
-                            <TextField 
-                                label="Email"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.email}
-                                name="email"
-                                error={Boolean(touched.email) && Boolean(errors.email)}
-                                helperText={touched.email && errors.email}
-                                sx={{ gridColumn: "span 4"}}
-                            />
+                        
+                        {isLogin && (
                             <TextField 
                                 label="Password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 value={values.password}
@@ -203,7 +302,21 @@ const Form = () => {
                                 error={Boolean(touched.password) && Boolean(errors.password)}
                                 helperText={touched.password && errors.password}
                                 sx={{ gridColumn: "span 4"}}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
+                        )}
                     </Box>
 
                     {/* BUTTONS */}
@@ -221,26 +334,30 @@ const Form = () => {
                         >
                             {isLogin ? "LOGIN" : "REGISTER"}
                         </Button>
+                        {error && (
+                            <Alert severity="error" sx={{ mb: 2 }}>
+                                {error}
+                            </Alert>
+                        )}
                         <Typography
                             fontWeight="bold"
-                            onClick = {() => {
+                            onClick={() => {
                                 setPageType(isLogin ? "register" : "login");
                                 resetForm();
+                                setShowPassword(false);
+                                setError("")
                             }}
                             sx={{
                                 textDecoration: "underline", 
                                 color: palette.primary.main,
                                 "&:hover" : { 
-                                    cursor:"pointer",
+                                    cursor: "pointer",
                                     color: palette.primary.light
                                 },
                             }}
                         >
-                            {isLogin ? "Don't have an account? Sign up here."
-                            : "Already have an account? Login here."}
-
+                            {isLogin ? "Don't have an account? Sign up here." : "Already have an account? Login here."}
                         </Typography>
-
                     </Box>
                 </form>
             )}
@@ -248,8 +365,4 @@ const Form = () => {
     )
 }
 
-export default Form; 
-
-
-
-
+export default Form;

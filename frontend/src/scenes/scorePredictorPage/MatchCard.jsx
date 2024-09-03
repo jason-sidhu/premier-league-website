@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Box, TextField, Button, Avatar, Grid } from '@mui/material';
+import { Card, CardContent, Typography, Box, TextField, Button, Avatar, Grid, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useSelector } from 'react-redux';
@@ -7,32 +7,62 @@ import { useTheme } from '@mui/material/styles';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPrediction, isGameWeekFinished, onSubmissionResult }) => {
+const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPrediction }) => {
     const theme = useTheme();
-    const [team1Score, setTeam1Score] = useState(0);
-    const [team2Score, setTeam2Score] = useState(0);
+    const [team1Score, setTeam1Score] = useState('0');
+    const [team2Score, setTeam2Score] = useState('0');
     const [prediction, setPrediction] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate(); 
     const token = useSelector((state) => state.token);
     const isLoggedIn = Boolean(token);
 
     useEffect(() => {
+        setLoading(true);
+
         if (initialPrediction) {
             setPrediction(initialPrediction);
-            setTeam1Score(initialPrediction.team1Score);
-            setTeam2Score(initialPrediction.team2Score);
+            setTeam1Score(String(initialPrediction.team1Score));
+            setTeam2Score(String(initialPrediction.team2Score));
         } else {
             setPrediction(null);
-            setTeam1Score(0);
-            setTeam2Score(0);
+            setTeam1Score('0');
+            setTeam2Score('0');
         }
+
+        const timeout = setTimeout(() => {
+            setLoading(false);
+        }, 300); 
+
+        return () => clearTimeout(timeout);
     }, [initialPrediction, match.matchId]);
 
     const handleScoreChange = (team, increment) => {
         if (team === 1) {
-            setTeam1Score(prev => Math.max(0, prev + increment));
+            setTeam1Score(prev => String(Math.max(0, parseInt(prev) + increment)));
         } else {
-            setTeam2Score(prev => Math.max(0, prev + increment));
+            setTeam2Score(prev => String(Math.max(0, parseInt(prev) + increment)));
+        }
+    };
+
+    const handleScoreInput = (team, value) => {
+        if (value === '') {
+            if (team === 1) setTeam1Score('');
+            else setTeam2Score('');
+        } else {
+            const parsedValue = parseInt(value);
+            if (!isNaN(parsedValue)) {
+                if (team === 1) setTeam1Score(String(Math.max(0, parsedValue)));
+                else setTeam2Score(String(Math.max(0, parsedValue)));
+            }
+        }
+    };
+
+    const handleBlur = (team) => {
+        if (team === 1 && team1Score === '') {
+            setTeam1Score('0');
+        } else if (team === 2 && team2Score === '') {
+            setTeam2Score('0');
         }
     };
 
@@ -44,23 +74,20 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
                 const response = await axios.post(`http://localhost:3001/predictions/save`, {
                     matchId: match.matchId,
                     gameWeek: match.gameWeek,
-                    team1Score,
-                    team2Score
+                    team1Score: parseInt(team1Score),
+                    team2Score: parseInt(team2Score)
                 }, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
-                // Update the prediction state with the new prediction from the server
                 setPrediction(response.data.prediction);
-                setTeam1Score(response.data.prediction.team1Score);
-                setTeam2Score(response.data.prediction.team2Score);
+                setTeam1Score(String(response.data.prediction.team1Score));
+                setTeam2Score(String(response.data.prediction.team2Score));
                 console.log('Prediction submitted');
-                onSubmissionResult('Prediction saved successfully!');
             } catch (error) {
                 console.error('Error submitting prediction:', error);
-                onSubmissionResult('Failed to save prediction.');
             }
         }
     };
@@ -76,23 +103,18 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
 
                     <Grid item xs={4} container justifyContent="center" alignItems="center">
                         <Box display="flex" alignItems="center" justifyContent="center">
-                            {gameFinished ? (
-                                <>
-                                    {prediction ? (
-                                        <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>
-                                            Your Prediction: {prediction.team1Score} - {prediction.team2Score}
-                                            {isGameWeekFinished && (
-                                                <Typography variant="body2" sx={{ color: theme.palette.success.main }}>
-                                                    Points: {prediction.score}
-                                                </Typography>
-                                            )}
-                                        </Typography>
-                                    ) : (
-                                        <Typography  sx={{ color: theme.palette.text.secondary }}>
-                                            {isLoggedIn ? 'No saved prediction' : 'Log in to see saved prediction'}
-                                        </Typography>
-                                    )}
-                                </>
+                            {loading ? (
+                                <CircularProgress />
+                            ) : gameFinished ? (
+                                prediction ? (
+                                    <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>
+                                        Your Prediction: {prediction.team1Score} - {prediction.team2Score}
+                                    </Typography>
+                                ) : (
+                                    <Typography  sx={{ color: theme.palette.text.secondary }}>
+                                        {isLoggedIn ? 'No saved prediction' : 'Log in to see saved prediction'}
+                                    </Typography>
+                                )
                             ) : gameStarted ? (
                                 <>
                                     <Button onClick={() => handleScoreChange(1, -1)} disabled>
@@ -101,7 +123,8 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
                                     <TextField 
                                         variant="outlined"
                                         value={team1Score}
-                                        onChange={(e) => setTeam1Score(Math.max(0, parseInt(e.target.value)))}
+                                        onChange={(e) => handleScoreInput(1, e.target.value)}
+                                        onBlur={() => handleBlur(1)}
                                         sx={{ width: 50, mx: 1 }}
                                         inputProps={{ style: { textAlign: 'center', fontSize: '1.5rem', color: theme.palette.neutral.main } }}
                                         disabled
@@ -115,7 +138,8 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
                                     <TextField 
                                         variant="outlined"
                                         value={team2Score}
-                                        onChange={(e) => setTeam2Score(Math.max(0, parseInt(e.target.value)))}
+                                        onChange={(e) => handleScoreInput(2, e.target.value)}
+                                        onBlur={() => handleBlur(2)}
                                         sx={{ width: 50, mx: 1 }}
                                         inputProps={{ style: { textAlign: 'center', fontSize: '1.5rem', color: theme.palette.neutral.main } }}
                                         disabled
@@ -126,32 +150,32 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
                                 </>
                             ) : (
                                 <>
-                                    <Button onClick={() => handleScoreChange(1, -1)} disabled={!isLoggedIn}>
+                                    <Button onClick={() => handleScoreChange(1, -1)}>
                                         <RemoveIcon sx={{ color: theme.palette.primary.dark }} />
                                     </Button>
                                     <TextField 
                                         variant="outlined"
                                         value={team1Score}
-                                        onChange={(e) => setTeam1Score(Math.max(0, parseInt(e.target.value)))}
+                                        onChange={(e) => handleScoreInput(1, e.target.value)}
+                                        onBlur={() => handleBlur(1)}
                                         sx={{ width: 50, mx: 1 }}
                                         inputProps={{ style: { textAlign: 'center', fontSize: '1.5rem', color: theme.palette.neutral.main } }}
-                                        disabled={!isLoggedIn}
                                     />
-                                    <Button onClick={() => handleScoreChange(1, 1)} disabled={!isLoggedIn}>
+                                    <Button onClick={() => handleScoreChange(1, 1)}>
                                         <AddIcon sx={{ color: theme.palette.primary.dark }} />
                                     </Button>
-                                    <Button onClick={() => handleScoreChange(2, -1)} disabled={!isLoggedIn}>
+                                    <Button onClick={() => handleScoreChange(2, -1)}>
                                         <RemoveIcon sx={{ color: theme.palette.primary.dark }} />
                                     </Button>
                                     <TextField 
                                         variant="outlined"
                                         value={team2Score}
-                                        onChange={(e) => setTeam2Score(Math.max(0, parseInt(e.target.value)))}
+                                        onChange={(e) => handleScoreInput(2, e.target.value)}
+                                        onBlur={() => handleBlur(2)}
                                         sx={{ width: 50, mx: 1 }}
                                         inputProps={{ style: { textAlign: 'center', fontSize: '1.5rem', color: theme.palette.neutral.main } }}
-                                        disabled={!isLoggedIn}
                                     />
-                                    <Button onClick={() => handleScoreChange(2, 1)} disabled={!isLoggedIn}>
+                                    <Button onClick={() => handleScoreChange(2, 1)}>
                                         <AddIcon sx={{ color: theme.palette.primary.dark }} />
                                     </Button>
                                 </>

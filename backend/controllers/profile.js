@@ -50,6 +50,7 @@ export const updateProfile = async(req, res) =>{
         //update any other info
         if(req.body.newFirstName){user.firstName = req.body.newFirstName}; 
         if(req.body.newLastName){user.lastName = req.body.newLastName}
+        if(req.body.newUsername){user.username = req.body.username}
         if(req.body.newFavouriteTeam){user.favouriteTeam = req.body.newFavouriteTeam}
         if(req.body.newPassword){
             //random salt to encrypty our password (bcrypt)
