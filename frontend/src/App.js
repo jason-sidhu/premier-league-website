@@ -9,12 +9,14 @@ import ProfilePage from 'scenes/profilePage';
 import ResultsPage from 'scenes/resultsPage';
 import StandingsPage from 'scenes/standingsPage';
 import StatisticsPage from 'scenes/statisticsPage';
+import ScorePredictorPage from 'scenes/scorePredictorPage';
 
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme';
+
 
 function App() {
   const mode = useSelector((state) => state.mode); 
@@ -33,8 +35,9 @@ function App() {
           <Route path="/login" element={ isAuth ? <HomePage /> : <LoginPage />} />
           <Route path="/profile" element={ isAuth ? <ProfilePage /> : <Navigate to="/login" /> } />
           <Route path="/results" element={ <ResultsPage />} />
-          <Route path="/standing" element={ <StandingsPage />} />
+          <Route path="/standings" element={ <StandingsPage />} />
           <Route path="/statistics" element={ <StatisticsPage />} />
+          <Route path="/scorepredictor" element={ <ScorePredictorPage />} />
           
         </Routes>
       </ThemeProvider>

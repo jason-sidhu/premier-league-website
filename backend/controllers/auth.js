@@ -1,5 +1,4 @@
 /*CONTROLLER FOR AUTH */
-import express from "express";
 import bcrypt from "bcrypt"; 
 import jwt from "jsonwebtoken"; 
 import User from "../models/User.js"; 
@@ -61,7 +60,7 @@ export const login = async (req, res) => {
         }
 
         //jwt 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_STRING); 
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET); 
         delete user.password; 
         res.status(200).json({token, user}); 
 

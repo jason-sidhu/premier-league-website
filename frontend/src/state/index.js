@@ -3,8 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = { 
     //light or dark
     mode: "dark", 
-    
-    //user auth info
     user: null, 
     token: null,
     favouriteTeam: null

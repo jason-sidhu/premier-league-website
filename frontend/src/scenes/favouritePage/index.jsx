@@ -1,6 +1,14 @@
+import { Box } from "@mui/material";
+import Navbar from "scenes/navbar";
+
 const FavouritePage = () => {
     return(
-        <div>FavouritePage</div>
+        <Box>
+            <Box>
+                <Navbar />
+            </Box> 
+            <div>FavouritePage</div>
+        </Box>
     )
 }
 

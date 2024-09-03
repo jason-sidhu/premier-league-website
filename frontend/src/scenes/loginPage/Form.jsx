@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import FlexBetween from "components/FlexBetween";
+import { teamMapping } from "components/Mapping";
 
 const registerSchema = yup.object().shape({
     firstName: yup.string().required("required"),
@@ -170,26 +171,9 @@ const Form = () => {
                                         value={values.favouriteTeam}
                                         name="favouriteTeam"
                                     >
-                                        <MenuItem value={"Arsenal"}>Arsenal</MenuItem>
-                                        <MenuItem value={"Aston Villa"}>Aston Villa</MenuItem>
-                                        <MenuItem value={"Bournemouth"}>Bournemouth</MenuItem>
-                                        <MenuItem value={"Brentford"}>Brentford</MenuItem>
-                                        <MenuItem value={"Brighton"}>Brighton & Hove Albion</MenuItem>
-                                        <MenuItem value={"Chelsea"}>Chelsea</MenuItem>
-                                        <MenuItem value={"Crystal Palace"}>Crystal Palace</MenuItem>
-                                        <MenuItem value={"Everton"}>Everton</MenuItem>
-                                        <MenuItem value={"Fulham"}>Fulham</MenuItem>
-                                        <MenuItem value={"Ipswich Town"}>Ipswich Town</MenuItem>
-                                        <MenuItem value={"Leicester City"}>Leicester City</MenuItem>
-                                        <MenuItem value={"Liverpool"}>Liverpool</MenuItem>
-                                        <MenuItem value={"Manchester City"}>Manchester City</MenuItem>
-                                        <MenuItem value={"Manchester United"}>Manchester United</MenuItem>
-                                        <MenuItem value={"Newcastle United"}>Newcastle United</MenuItem>
-                                        <MenuItem value={"Nottingham Forest"}>Nottingham Forest</MenuItem>
-                                        <MenuItem value={"Southampton"}>Southampton</MenuItem>
-                                        <MenuItem value={"Tottenham Hotspur"}>Tottenham Hotspur</MenuItem>
-                                        <MenuItem value={"West Ham United"}>West Ham United</MenuItem>
-                                        <MenuItem value={"Wolverhampton Wanderers"}>Wolverhampton Wanderers</MenuItem>
+                                        {Object.entries(teamMapping).map(([key, value]) => (
+                                            <MenuItem key={key} value={value}>{value}</MenuItem>
+                                        ))}
                                     </Select>
                                     {touched.favouriteTeam && errors.favouriteTeam && (
                                         <Typography variant="body2" color="error">

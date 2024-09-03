@@ -62,11 +62,12 @@ const Navbar = () => {
                 },
             }}
         >
-        Premier League 
+        Premier League Game Hub
         </Typography>
         {isNonMobileScreens ? (
             <FlexBetween gap="2rem"> 
-                <Typography 
+            {/* COMING SOON  */}
+                {/* <Typography 
                 fontWeight="bold"
                 onClick={() => navigate ("/results")}
                 sx={{
@@ -78,13 +79,23 @@ const Navbar = () => {
 
                 <Typography 
                 fontWeight="bold"
+                onClick={() => navigate ("/standings")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Standings</Typography> */}
+
+                {/* <Typography 
+                fontWeight="bold"
                 onClick={() => navigate ("/statistics")}
                 sx={{
                     "&:hover": {
                         color: primaryDark, 
                         cursor: "pointer",
                     },
-                }}>Statistics</Typography>
+                }}>Statistics</Typography> */}
 
                 <Typography 
                 fontWeight="bold"
@@ -98,13 +109,23 @@ const Navbar = () => {
 
                 <Typography 
                 fontWeight="bold"
+                onClick={() => navigate ("/scorepredictor")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Score Predictor</Typography>
+
+                {/* <Typography 
+                fontWeight="bold"
                 onClick={() => navigate ("/favourite")}
                 sx={{
                     "&:hover": {
                         color: primaryDark, 
                         cursor: "pointer",
                     },
-                }}>Favourite</Typography>
+                }}>Favourite</Typography> */}
             </FlexBetween>
         ) : (
             <></>
@@ -214,7 +235,7 @@ const Navbar = () => {
                         <LightMode sx={{ color: dark, fontSize: "25px" }} />
                     )}
                 </IconButton> 
-                <Typography 
+                {/* <Typography 
                 fontWeight="bold"
                 onClick={() => navigate ("/results")}
                 sx={{
@@ -226,13 +247,23 @@ const Navbar = () => {
 
                 <Typography 
                 fontWeight="bold"
+                onClick={() => navigate ("/standings")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Standings</Typography>
+
+                <Typography 
+                fontWeight="bold"
                 onClick={() => navigate ("/statistics")}
                 sx={{
                     "&:hover": {
                         color: primaryDark, 
                         cursor: "pointer",
                     },
-                }}>Statistics</Typography>
+                }}>Statistics</Typography> */}
 
                 <Typography 
                 fontWeight="bold"
@@ -246,13 +277,23 @@ const Navbar = () => {
 
                 <Typography 
                 fontWeight="bold"
+                onClick={() => navigate ("/scorepredictor")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Score Predictor</Typography>      
+
+                {/* <Typography 
+                fontWeight="bold"
                 onClick={() => navigate ("/favourite")}
                 sx={{
                     "&:hover": {
                         color: primaryDark, 
                         cursor: "pointer",
                     },
-                }}>Favourite</Typography>
+                }}>Favourite</Typography> */}
                 {user ? (
                     <FlexBetween 
                         display="flex"

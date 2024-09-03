@@ -8,8 +8,11 @@ import helmet from "helmet";
 import morgan from "morgan"; 
 import { fileURLToPath } from "url"; 
 import authRoute from "./routes/auth.js"; 
-import profileRoute from "./routes/profile.js"
-import { register } from "./controllers/auth.js";
+import profileRoute from "./routes/profile.js";
+import fantasyRoute from "./routes/fantasy.js";
+import matchesRoute from "./routes/matches.js"; 
+import predictionsRoute from "./routes/predictions.js";
+
 
 //CONFIGURATIONS and middleware 
 const __filename = fileURLToPath(import.meta.url); 
@@ -35,6 +38,10 @@ app.use(cors());
 // app.post("/auth/register", register); 
 app.use("/auth", authRoute); 
 app.use("/profile", profileRoute);
+app.use("/fantasy", fantasyRoute);
+app.use("/matches", matchesRoute);
+app.use("/predictions", predictionsRoute);
+
 //add more routes  
 
 //MONGODB 
