@@ -4,19 +4,17 @@ phases:
   install:
     commands:
       - echo Installing NPM dependencies...
+      - cd backend # Change to the backend directory
       - npm install
   pre_build:
     commands:
       - echo Pre-build phase...
-      - echo No specific pre-build steps needed for this project.
   build:
     commands:
       - echo Build phase...
-      - echo No build step needed.
   post_build:
     commands:
       - echo Post-build phase...
-      - echo No post-build steps needed.
 artifacts:
   files:
     - '**/*'
