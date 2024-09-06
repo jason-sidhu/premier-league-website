@@ -1,0 +1,8 @@
+{
+    "name": "heroku-app",
+    "version": "1.0.0",
+    "scripts": {
+      "heroku-postbuild": "cd backend && npm install && npm start"
+    }
+  }
+  
