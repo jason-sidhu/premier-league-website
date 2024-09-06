@@ -1,6 +1,6 @@
 import PredictionModel from "../models/PredictionModel.js";
 import MatchResult from "../models/MatchResultModel.js";
-import UserScoreModel from "../models/userScoreModel.js";
+import UserScoreModel from "../models/UserScoreModel.js";
 
 export const savePrediction = async (req, res) => {
     const { matchId, gameWeek, team1Score, team2Score } = req.body;
