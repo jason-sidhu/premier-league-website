@@ -54,7 +54,7 @@ const Navbar = () => {
                 },
             }}
         >
-        Premier League Game Hub
+        Premier League Game Zone
         </Typography>
         {isNonMobileScreens ? (
             <FlexBetween gap="2rem"> 
