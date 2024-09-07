@@ -1,23 +1,15 @@
 import { useState } from "react";
 import { Box, 
     IconButton, 
-    InputBase, 
     Typography, 
-    Select, 
-    MenuItem,
-    FormControl,
     useTheme, 
-    useMediaQuery,
-    InputLabel } from "@mui/material";
+    useMediaQuery } from "@mui/material";
 
-import { Search, 
-    Message,
+import {
     DarkMode, 
     LightMode, 
-    Notifications,
     Menu, 
-    Close,
-    Help} from "@mui/icons-material"
+    Close} from "@mui/icons-material"
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state"; 
 import { useNavigate } from "react-router-dom";

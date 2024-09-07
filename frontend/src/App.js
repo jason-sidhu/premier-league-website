@@ -4,14 +4,11 @@ import HomePage from 'scenes/homePage';
 import FantasyPage from 'scenes/fantasyPage';
 import FavouritePage from 'scenes/favouritePage';
 import LoginPage from 'scenes/loginPage';
-import Navbar from 'scenes/navbar';
 import ProfilePage from 'scenes/profilePage';
 import ResultsPage from 'scenes/resultsPage';
 import StandingsPage from 'scenes/standingsPage';
 import StatisticsPage from 'scenes/statisticsPage';
 import ScorePredictorPage from 'scenes/scorePredictorPage';
-
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
