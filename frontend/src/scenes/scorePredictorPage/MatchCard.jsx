@@ -16,6 +16,7 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
     const navigate = useNavigate(); 
     const token = useSelector((state) => state.token);
     const isLoggedIn = Boolean(token);
+    const backendUrl = process.env.REACT_APP_BACKEND_URL; 
 
     useEffect(() => {
         setLoading(true);
@@ -71,7 +72,8 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
             navigate("/login"); 
         } else {
             try {
-                const response = await axios.post(`http://localhost:3001/predictions/save`, {
+                // const response = await axios.post(`http://localhost:3001/predictions/save`, {
+                    const response = await axios.post(`${backendUrl}/predictions/save`, {
                     matchId: match.matchId,
                     gameWeek: match.gameWeek,
                     team1Score: parseInt(team1Score),

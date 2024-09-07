@@ -15,12 +15,14 @@ const ScorePredictor = () => {
     const [loading, setLoading] = useState(true); // Loading state for data fetching
     const token = useSelector((state) => state.token);
     const isLoggedIn = Boolean(token);
+    const backendUrl = process.env.REACT_APP_BACKEND_URL; 
 
     const fetchMatches = async () => {
         setLoading(true); // Set loading to true when fetching starts
 
         try {
-            const response = await axios.get(`http://localhost:3001/matches?gameWeek=${gameWeek}`);
+            // const response = await axios.get(`http://localhost:3001/matches?gameWeek=${gameWeek}`);
+            const response = await axios.get(`${backendUrl}/matches?gameWeek=${gameWeek}`);
             const fetchedMatches = response.data.matches;
             setMatches(fetchedMatches);
 
@@ -30,7 +32,8 @@ const ScorePredictor = () => {
 
             if (isLoggedIn) {
                 // Fetch predictions for the current game week if logged in
-                const predictionsResponse = await axios.get(`http://localhost:3001/predictions/get?gameWeek=${gameWeek}`, {
+                // const predictionsResponse = await axios.get(`http://localhost:3001/predictions/get?gameWeek=${gameWeek}`, {
+                const predictionsResponse = await axios.get(`${backendUrl}/predictions/get?gameWeek=${gameWeek}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -46,7 +49,8 @@ const ScorePredictor = () => {
                 setPredictions(predictionsData);
 
                 // Fetch the total score and game week score
-                const scoreResponse = await axios.get(`http://localhost:3001/predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
+                // const scoreResponse = await axios.get(`http://localhost:3001/predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
+                const scoreResponse = await axios.get(`${backendUrl}predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

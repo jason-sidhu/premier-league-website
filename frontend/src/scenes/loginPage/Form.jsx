@@ -77,12 +77,16 @@ const Form = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const isLogin = pageType === "login";
     const isRegister = pageType === "register";
+    const backendUrl = process.env.REACT_APP_BACKEND_URL; 
+
+
 
     const register = async (values, onSubmitProps) => {
         setError(""); // Reset error message
         try {
             const savedUserResponse = await fetch(
-                "http://localhost:3001/auth/register",
+                // "http://localhost:3001/auth/register",
+                `${backendUrl}/auth/register`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -111,7 +115,8 @@ const Form = () => {
         setError(""); // Reset error message
         try {
             const loggedInResponse = await fetch(
-                "http://localhost:3001/auth/login",
+                // "http://localhost:3001/auth/login",
+                `${backendUrl}/auth/login`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

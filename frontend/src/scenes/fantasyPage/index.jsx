@@ -15,12 +15,14 @@ const FantasyPage = () => {
     const [price, setPrice] = useState("Unlimited");
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true); // Loading state
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchFantasyData = async () => {
             setLoading(true); // Set loading to true when fetching starts
             try {
-                const response = await axios.get('http://localhost:3001/fantasy/general');
+                // const response = await axios.get('http://localhost:3001/fantasy/general');
+                const response = await axios.get(`${backendUrl}/fantasy/general`);
                 const formattedData = response.data.elements.map((player) => ({
                     ...player,
                     now_cost: parseFloat((player.now_cost / 10).toFixed(1)),
