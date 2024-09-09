@@ -99,7 +99,14 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center">
                     <Grid item xs={4} container direction="column" alignItems="center">
-                        <Avatar alt={match.team1} src={match.team1Flag} sx={{ width: 56, height: 56, mb: 1 }} />
+                        {/* <img alt={match.team1} src={`/team-logos/chelsea-logo.svg`}/> */}
+                        {/* <Avatar alt={match.team1} src={`/team-logos/${match.team1}.svg`} sx={{ width: 56, height: 56, mb: 1 }} /> */}
+                        <Box
+                            component="img"
+                            alt={match.team1}
+                            src={`/team-logos/${match.team1}.svg`}
+                            sx={{ width: 56, height: 56, mb: 1 }}
+                        />
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{match.team1}</Typography>
                     </Grid>
 
@@ -186,7 +193,13 @@ const MatchCard = ({ match, gameStarted, gameFinished, prediction: initialPredic
                     </Grid>
 
                     <Grid item xs={4} container direction="column" alignItems="center">
-                        <Avatar alt={match.team2} src={match.team2Flag} sx={{ width: 56, height: 56, mb: 1 }} />
+                        {/* <Avatar alt={match.team2} src={match.team2Flag} sx={{ width: 56, height: 56, mb: 1 }} /> */}
+                        <Box
+                            component="img"
+                            alt={match.team2}
+                            src={`/team-logos/${match.team2}.svg`}
+                            sx={{ width: 56, height: 56, mb: 1 }}
+                        />
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{match.team2}</Typography>
                     </Grid>
                 </Grid>
