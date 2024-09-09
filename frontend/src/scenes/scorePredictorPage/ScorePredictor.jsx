@@ -144,9 +144,9 @@ const ScorePredictor = () => {
             </Box>
             
 
-            <Grid container spacing={4} justifyContent="center" sx={{ position: 'relative', zIndex: 0 }}>
+            <Grid container spacing={4} justifyContent="center">
                 {matches.map((match, index) => (
-                    <Grid xs={12} sm={6} key={index}>
+                    <Grid item xs={12} sm={12} md={12} lg={6} key={index}>
                         <MatchCard 
                             match={match} 
                             gameStarted={match.started} 

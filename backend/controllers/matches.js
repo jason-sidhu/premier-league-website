@@ -50,7 +50,8 @@ export const getMatches = async (req, res) => {
                     team1Score: matchResult.team1Score,
                     team2Score: matchResult.team2Score,
                     finished: matchResult.completed,
-                    started: true // Since the match is completed, it must have started
+                    started: true, // Since the match is completed, it must have started
+                    kickoffTime: fixture.kickoff_time
                 };
             } else if (fixture.finished) {
                 // If the match is finished but not yet recorded, update the database
@@ -73,7 +74,8 @@ export const getMatches = async (req, res) => {
                     team1Score: fixture.team_h_score,
                     team2Score: fixture.team_a_score,
                     finished: fixture.finished,
-                    started: true // Since the match is finished, it must have started
+                    started: true,
+                    kickoffTime: fixture.kickoff_time
                 };
             } else {
                 // If the match is not finished, return the current state with the started status
@@ -87,7 +89,8 @@ export const getMatches = async (req, res) => {
                     team1Score: null,
                     team2Score: null,
                     finished: fixture.finished,
-                    started: started // Use the determined started status
+                    started: started,
+                    kickoffTime: fixture.kickoff_time
                 };
             }
         }));
