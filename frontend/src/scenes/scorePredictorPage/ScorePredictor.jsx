@@ -50,7 +50,7 @@ const ScorePredictor = () => {
 
                 // Fetch the total score and game week score
                 // const scoreResponse = await axios.get(`http://localhost:3001/predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
-                const scoreResponse = await axios.get(`${backendUrl}predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
+                const scoreResponse = await axios.get(`${backendUrl}/predictions/getGameWeekScore?gameWeek=${gameWeek}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
