@@ -3,24 +3,28 @@ import bcrypt, { compare } from "bcrypt";
 import User from "../models/User.js"; 
 
 
-export const getProfile = async(req, res) =>{
-    try{
-        //from the verify function, we store the user with id in req.user
+export const getProfile = async (req, res) => {
+    try {
+        // Get the user ID from req.user (set by the authentication middleware)
         const userId = req.user.id;
-        const user = await User.findById(userId); 
-        if(!user){
-            return res.status(401).json({ message: "User not found"}); 
+        const user = await User.findById(userId);
+
+        // If user is not found, return an error
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
         }
-        res.status(200).json(user); 
 
-        const userWithoutPassword = { ...user._doc };
-        delete userWithoutPassword.password;
+        // Remove sensitive information before sending the user data
+        const userWithoutPassword = { ...user._doc }; // Spread the user object
+        delete userWithoutPassword.password; // Remove the password
 
-        res.status(200).json({ user: userWithoutPassword }); 
+        // Send the user data without sensitive information
+        res.status(200).json(userWithoutPassword);
     } catch (err) {
-        res.status(404).json({ message: err.message }); 
+        res.status(404).json({ message: err.message });
     }
-}
+};
+
 
 export const updateProfile = async(req, res) =>{
     try{

@@ -118,6 +118,16 @@ const Navbar = () => {
                         cursor: "pointer",
                     },
                 }}>Favourite</Typography> */}
+
+                <Typography 
+                fontWeight="bold"
+                onClick={() => navigate ("/leaderboard")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Leaderboard</Typography>
             </FlexBetween>
         ) : (
             <></>
@@ -286,6 +296,16 @@ const Navbar = () => {
                         cursor: "pointer",
                     },
                 }}>Favourite</Typography> */}
+
+                <Typography 
+                fontWeight="bold"
+                onClick={() => navigate ("/leaderboard")}
+                sx={{
+                    "&:hover": {
+                        color: primaryDark, 
+                        cursor: "pointer",
+                    },
+                }}>Leaderboard</Typography>
                 {user ? (
                     <FlexBetween 
                         display="flex"

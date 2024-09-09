@@ -9,10 +9,12 @@ import ResultsPage from 'scenes/resultsPage';
 import StandingsPage from 'scenes/standingsPage';
 import StatisticsPage from 'scenes/statisticsPage';
 import ScorePredictorPage from 'scenes/scorePredictorPage';
+import Leaderboard from 'scenes/leaderboardPage';
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme';
+
 
 
 function App() {
@@ -35,6 +37,7 @@ function App() {
           <Route path="/standings" element={ <StandingsPage />} />
           <Route path="/statistics" element={ <StatisticsPage />} />
           <Route path="/scorepredictor" element={ <ScorePredictorPage />} />
+          <Route path="/leaderboard" element={ <Leaderboard />} />
           
         </Routes>
       </ThemeProvider>

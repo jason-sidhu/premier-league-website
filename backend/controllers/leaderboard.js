@@ -1,25 +1,17 @@
-// import express from 'express';
-// import UserScore from '../models/UserScoreModel.js';
-// import User from '../models/User.js';
+import express from 'express';
+import UserScoreModel from '../models/UserScoreModel.js';
+import User from '../models/User.js';
 
 // const router = express.Router();
-
-// router.get('/leaderboard', async (req, res) => {
-//     try {
-//         const leaderboard = await UserScore.find()
-//             .sort({ totalScore: -1 })
-//             .limit(10)
-//             .populate('userId', 'username')
-//             .exec();
-
-//         res.status(200).json(leaderboard.map(userScore => ({
-//             userId: userScore.userId._id,
-//             username: userScore.userId.username,
-//             totalScore: userScore.totalScore,
-//         })));
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to fetch leaderboard' });
-//     }
-// });
-
-// export default router;
+export const getLeaderboard = async (req, res) => {
+    try {
+        const leaderboard = await UserScoreModel.find()
+            .populate('userId', 'username') 
+            .sort({ totalScore: -1 })  // Sort by totalScore in descending order
+            .limit(100);  // Limit to top 100 users
+        res.json(leaderboard);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        res.status(500).json({ message: 'Failed to fetch leaderboard' });
+    }
+};

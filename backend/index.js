@@ -12,6 +12,7 @@ import profileRoute from "./routes/profile.js";
 import fantasyRoute from "./routes/fantasy.js";
 import matchesRoute from "./routes/matches.js"; 
 import predictionsRoute from "./routes/predictions.js";
+import leaderboardRoute from "./routes/leaderboard.js"
 
 
 //CONFIGURATIONS and middleware 
@@ -41,6 +42,7 @@ app.use("/profile", profileRoute);
 app.use("/fantasy", fantasyRoute);
 app.use("/matches", matchesRoute);
 app.use("/predictions", predictionsRoute);
+app.use("/leaderboard", leaderboardRoute);
 
 //add more routes  
 
