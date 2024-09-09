@@ -27,52 +27,42 @@ export const getProfile = async (req, res) => {
     }
 };
 
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { firstName, lastName, email, username, favoriteTeam, newPassword, currentPassword } = req.body;
 
-export const updateProfile = async(req, res) =>{
-    try{
-        const userId = req.user.id; 
-        const user = await User.findById(userId);   
-
-        if(!user){
-            return res.status(401).json({ message: "User not found"}); 
-        } 
-
-        //dont update anything if password is incorrect
-        const correctPassword = await bcrypt.compare(req.body.currentPassword, user.password); 
-        if(!correctPassword){
-            return res.status(400).json({msg: "Password is incorrect"}); 
+        // Fetch user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
 
-        //if updating email, make sure no other has this one
-        if (req.body.newEmail && req.body.newEmail !== user.email) {
-            const existingUser = await User.findOne({ email: req.body.newEmail });
-
-            if (existingUser) {
-                return res.status(400).json({ message: "Email is already in use" });
+        // If a new password is provided, hash and update it
+        if (newPassword && currentPassword) {
+            const isMatch = await bcrypt.compare(currentPassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: "Current password is incorrect" });
             }
-            user.email = req.body.newEmail;
+            user.password = await bcrypt.hash(newPassword, 10);
         }
 
-        //update any other info
-        if(req.body.newFirstName){user.firstName = req.body.newFirstName}; 
-        if(req.body.newLastName){user.lastName = req.body.newLastName}
-        if(req.body.newUsername){user.username = req.body.username}
-        if(req.body.newFavouriteTeam){user.favouriteTeam = req.body.newFavouriteTeam}
-        if(req.body.newPassword){
-            //random salt to encrypty our password (bcrypt)
-            const salt = await bcrypt.genSalt();
-            const passwordHash = await bcrypt.hash(req.body.newPassword, salt);
-            user.password = passwordHash; 
-        }
-        await user.save(); 
-        const userWithoutPassword = { ...user._doc };
-        delete userWithoutPassword.password;
+        // Update user fields
+        user.firstName = firstName || user.firstName;
+        user.lastName = lastName || user.lastName;
+        user.email = email || user.email;
+        user.username = username || user.username;
+        user.favoriteTeam = favoriteTeam || user.favoriteTeam;
 
-        res.status(200).json({ user: userWithoutPassword }); 
-    } catch (err) {
-        res.status(500).json({ message: err.message}); 
+        // Save updated user to the database
+        await user.save();
+
+        res.status(200).json({ message: "Profile updated successfully" });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ message: "Failed to update profile" });
     }
-}
+};
 
 export const deleteProfile = async (req, res) => {
     try {
