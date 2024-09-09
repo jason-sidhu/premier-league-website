@@ -6,12 +6,14 @@ import Navbar from 'scenes/navbar';
 const Leaderboard = () => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true); // Track loading state
+    const backendUrl = process.env.REACT_APP_BACKEND_URL; 
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
             setLoading(true); // Set loading to true when fetching starts
             try {
-                const response = await axios.get('http://localhost:3001/leaderboard');
+                // const response = await axios.get('http://localhost:3001/leaderboard');
+                const response = await axios.get(`${backendUrl}/leaderboard`);
                 setLeaderboard(response.data);
             } catch (error) {
                 console.error('Error fetching leaderboard data', error);
