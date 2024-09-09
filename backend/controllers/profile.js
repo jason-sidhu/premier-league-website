@@ -55,10 +55,9 @@ export const updateProfile = async(req, res) =>{
         if(req.body.newPassword){
             //random salt to encrypty our password (bcrypt)
             const salt = await bcrypt.genSalt();
-            const passwordHash = await bcrypt.hash(newPassword, salt);
+            const passwordHash = await bcrypt.hash(req.body.newPassword, salt);
             user.password = passwordHash; 
         }
-
         await user.save(); 
         const userWithoutPassword = { ...user._doc };
         delete userWithoutPassword.password;
