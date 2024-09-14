@@ -33,16 +33,16 @@ const Leaderboard = () => {
             
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <Typography variant="h4" gutterBottom>
-                    Leaderboard
+                    Top 20 Global Leaderboard
                 </Typography>
             </Box>
 
             <Box 
                 sx={{
-                    maxWidth: '80%',  // Restrict the max-width to 80% of the screen
-                    margin: '0 auto',  // Center the table horizontally
-                    mt: 3,             // Add margin-top to create space below the navbar
-                    padding: 2,        // Add padding to ensure space between the table and sides
+                    maxWidth: '80%',  
+                    margin: '0 auto',  
+                    mt: 3,             
+                    padding: 2,        
                 }}
             >
                 <TableContainer component={Paper}>
@@ -61,7 +61,7 @@ const Leaderboard = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {leaderboard.map((user, index) => (
+                                {leaderboard.slice(0, 20).map((user, index) => (
                                     <TableRow key={user.userId._id}>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>{user.userId.username}</TableCell>
